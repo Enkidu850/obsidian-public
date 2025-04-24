@@ -1,0 +1,40 @@
+{
+  "name": "obsidian",
+  "displayName": "Obsidian",
+  "description": "Langage de programmation créé par Enkidu",
+  "publisher": "Enkidu",
+  "version": "0.0.1",
+  "engines": {
+    "vscode": "^1.98.0"
+  },
+  "icon": "obs-icon.png",
+  "icons": {
+    "file": {
+      "icon": "obs-icon.png"
+    }
+  },
+  "categories": [
+    "Programming Languages"
+  ],
+  "contributes": {
+    "languages": [{
+      "id": "obs",
+      "aliases": ["Obsidian", "obs"],
+      "extensions": [".obs"],
+      "configuration": "./language-configuration.json",
+      "icon": {
+        "light": "obs-icon.png",
+        "dark": "obs-icon.png"
+      }
+    }],
+    "grammars": [{
+      "language": "obs",
+      "scopeName": "source.obs",
+      "path": "./syntaxes/obs.tmLanguage.json"
+    }]
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/Enkidu850/obsidian-public.git"
+  }
+}

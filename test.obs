@@ -1,0 +1,35 @@
+INT entier# <- 10;
+FLOAT reel# <- 10.0;
+STR chaine# <- "Hello World!";
+BOOL booleen# <- TRUE;
+LIST maListe[] <- [
+    "Salut",
+    42,
+    FALSE
+];
+POINT a$ <- (48.85912042441345, 2.2944356524978415) [4326];
+POINT b$ <- (20, 30.5) [4326];
+LINE ligne$ <- ((6229006.8059, 263818.6995), (6228994.8069, 263775.2849), (6228980.884, 263726.2264)) [3857];
+POLYGON polygone$ <- ((10, 2), (3, 4), (5, 6), a$) [4326];
+
+
+PRINT 4 + 1.5;
+PRINT 10 / 2;
+PRINT 10 / 3.0;
+PRINT entier#;
+PRINT reel#;
+PRINT chaine#;
+PRINT "ROGER ME RECEVEZ VOUS ?" + " OUI !" + entier#;
+PRINT entier# + entier#;
+PRINT booleen#;
+PRINT entier# + booleen#;
+PRINT maListe[]{0};
+PRINT maListe[]{1};
+PRINT maListe[]{2};
+PRINT maListe[];
+PRINT DISTANCE{a$, b$};
+PRINT a$;
+PRINT ligne$;
+PRINT polygone$;
+
+MAP ligne$;

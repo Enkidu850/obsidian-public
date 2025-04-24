@@ -1,0 +1,58 @@
+{
+	"$schema": "https://raw.githubusercontent.com/martinring/tmlanguage/master/tmlanguage.json",
+	"name": "Obsidian",
+	"patterns": [
+		{
+		  "name": "keyword.control.obs",
+		  "match": "\\b(INT|PRINT|FLOAT|STR|BOOL|LIST|POINT|LINE|POLYGON|MAP)\\b"
+		},
+		{
+		  "name": "constant.numeric.obs",
+		  "match": "\\b\\d+\\b"
+		},
+		{
+		  "name": "string.obs",
+		  "match": "\".*?\""
+		},
+		{
+		  "name": "variable.other.obs",
+		  "match": "\\b[a-zA-Z_][a-zA-Z0-9_]*#\\b"
+		},
+		{
+		  "name": "keyword.operator.obs",
+		  "match": "<-"
+		},
+		{
+		  "name": "punctuation.terminator.obs",
+		  "match": ";"
+		},
+		{
+			"name": "constant.language.boolean.obs",
+			"match": "\\b(TRUE|FALSE)\\b"
+		},
+		{
+			"name": "support.function.obs",
+			"match": "\\b(DISTANCE)\\b"
+		}
+	  ],
+	"repository": {
+		"keywords": {
+			"patterns": [{
+				"name": "keyword.control.obs",
+				"match": "\\b(if|while|for|return)\\b"
+			}]
+		},
+		"strings": {
+			"name": "string.quoted.double.obs",
+			"begin": "\"",
+			"end": "\"",
+			"patterns": [
+				{
+					"name": "constant.character.escape.obs",
+					"match": "\\\\."
+				}
+			]
+		}
+	},
+	"scopeName": "source.obs"
+}
