@@ -50,7 +50,7 @@
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
     "sync-public": "powershell -NoProfile -Command \"Copy-Item '../obsidian/*' -Destination '../TEST_PUBLIC/obsidian/' -Recurse -Force -Exclude @('node_modules', '.git', '.vscode', '*.vsix')\"",
-    "sync-and-push": "npm run sync-public && cd ../TEST_PUBLIC/obsidian && git add . && git commit -m \"Sync from private\" && git push && cd ../../.."
+    "sync-and-push": "npm run sync-public && cd ../TEST_PUBLIC/obsidian && git add . && git commit -m \"Sync from private\" && git push --force && cd ../../.."
   },
   "keywords": [],
   "author": "",
