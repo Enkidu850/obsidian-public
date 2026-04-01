@@ -12,6 +12,9 @@ token_specification = [
     ('BOOL',          r'BOOL'),
     ('POINT',         r'POINT'),
     ('DISTANCE',      r'DISTANCE'),
+    ('LENGTH',        r'LENGTH'),
+    ('PERIMETER',     r'PERIMETER'),
+    ('AREA',          r'AREA'),
     ('LINE',          r'LINE'),
     ('POLYGON',       r'POLYGON'),
     ('MAP',           r'MAP'),
@@ -71,6 +74,8 @@ class Line:
         return f"({', '.join(str(p) for p in self.points)})"
 
     def length(self):
+        from pyproj import Transformer
+        transformer = Transformer.from_crs("EPSG:"+str(self.epsg), "EPSG:4326", always_xy=True)
         return sum(self.points[i].distance_to(self.points[i+1]) for i in range(len(self.points) - 1))
 
 class Polygon:
@@ -87,6 +92,16 @@ class Polygon:
 
     def perimeter(self):
         return sum(self.points[i].distance_to(self.points[i+1]) for i in range(len(self.points) - 1))
+    
+    def area(self):
+        # Algorithme de l'aire de Shoelace
+        n = len(self.points)
+        area = 0.0
+        for i in range(n - 1):
+            x1, y1 = self.points[i].x, self.points[i].y
+            x2, y2 = self.points[i + 1].x, self.points[i + 1].y
+            area += (x1 * y2) - (x2 * y1)
+        return abs(area) / 2.0
 
 def tokenize(code):
     pos = 0
@@ -125,6 +140,33 @@ def parse_expression(tokens):
             if not tokens or tokens.pop(0)[0] != 'RBRACE':
                 raise SyntaxError("Accolade fermante '}' attendue après arguments DISTANCE")
             output.append(('DISTANCE_CALL', arg1[1], arg2[1]))
+        elif kind == 'LENGTH':
+            if not tokens or tokens.pop(0)[0] != 'LBRACE':
+                raise SyntaxError("Accolade ouvrante '{' attendue après LENGTH")
+            arg1 = tokens.pop(0)
+            if arg1[0] != 'SPATIAL_IDENT':
+                raise SyntaxError("Premier argument de LENGTH invalide.")
+            if not tokens or tokens.pop(0)[0] != 'RBRACE':
+                raise SyntaxError("Accolade fermante '}' attendue après arguments LENGTH")
+            output.append(('LENGTH_CALL', arg1[1]))
+        elif kind == 'PERIMETER':
+            if not tokens or tokens.pop(0)[0] != 'LBRACE':
+                raise SyntaxError("Accolade ouvrante '{' attendue après PERIMETER")
+            arg1 = tokens.pop(0)
+            if arg1[0] != 'SPATIAL_IDENT':
+                raise SyntaxError("Premier argument de PERIMETER invalide.")
+            if not tokens or tokens.pop(0)[0] != 'RBRACE':
+                raise SyntaxError("Accolade fermante '}' attendue après arguments PERIMETER")
+            output.append(('PERIMETER_CALL', arg1[1]))
+        elif kind == 'AREA':
+            if not tokens or tokens.pop(0)[0] != 'LBRACE':
+                raise SyntaxError("Accolade ouvrante '{' attendue après AREA")
+            arg1 = tokens.pop(0)
+            if arg1[0] != 'SPATIAL_IDENT':
+                raise SyntaxError("Premier argument de AREA invalide.")
+            if not tokens or tokens.pop(0)[0] != 'RBRACE':
+                raise SyntaxError("Accolade fermante '}' attendue après arguments AREA")
+            output.append(('AREA_CALL', arg1[1]))
         elif kind == 'LIST_NAME' and tokens and tokens[0][0] == 'LBRACE':
             tokens.pop(0)  # consume LBRACE
             index_token = tokens.pop(0)
@@ -192,13 +234,43 @@ def eval_expression(expr_tokens):
             if not isinstance(pt1, Point) or not isinstance(pt2, Point):
                 raise TypeError("DISTANCE ne peut être utilisé qu'entre deux POINTS.")
             return pt1.distance_to(pt2)
+        elif token[0] == 'LENGTH_CALL':
+            name = token[1]
+            if name not in variables:
+                raise NameError("La ligne n'est pas définie.")
+            line = variables[name]
+            return line.length()
+        elif token[0] == 'PERIMETER_CALL':
+            name = token[1]
+            if name not in variables:
+                raise NameError("Le polygone n'est pas défini.")
+            polygon = variables[name]
+            return polygon.perimeter()
+        elif token[0] == 'AREA_CALL':
+            name = token[1]
+            if name not in variables:
+                raise NameError("Le polygone n'est pas défini.")
+            polygon = variables[name]
+            return polygon.area()
         else:
             raise ValueError(f"Token invalide dans resolve : {token}")
 
     i = 0
     while i < len(expr_tokens):
         token = expr_tokens[i]
-        if token[0] in ('NUMBER', 'REAL', 'CHAR', 'IDENT', 'LIST_ACCESS', 'LIST_NAME', 'SPATIAL_IDENT', 'DISTANCE_CALL'):
+        if token[0] in (
+            'NUMBER',
+            'REAL',
+            'CHAR',
+            'IDENT',
+            'LIST_ACCESS',
+            'LIST_NAME',
+            'SPATIAL_IDENT',
+            'DISTANCE_CALL',
+            'LENGTH_CALL',
+            'PERIMETER_CALL',
+            'AREA_CALL'
+        ):
             stack.append(resolve(token))
         elif token[0] in ('PLUS', 'MINUS', 'MULT', 'DIV'):
             op = token[0]

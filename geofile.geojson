@@ -1,0 +1,54 @@
+{
+    "type": "FeatureCollection",
+    "features": [
+      {
+        "type": "Feature",
+        "properties": {
+          "name": "Ligne A",
+          "type": "Route",
+          "speed_limit": 80
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [2.3522, 48.8566],
+            [2.3622, 48.8666],
+            [2.3722, 48.8766]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "name": "Ligne B",
+          "type": "Voie ferrée",
+          "operational": true
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [2.2922, 48.8584],
+            [2.3000, 48.8600],
+            [2.3100, 48.8650]
+          ]
+        }
+      },
+      {
+        "type": "Feature",
+        "properties": {
+          "name": "Ligne C",
+          "type": "Piste cyclable",
+          "surface": "Asphalte"
+        },
+        "geometry": {
+          "type": "LineString",
+          "coordinates": [
+            [2.3200, 48.8500],
+            [2.3300, 48.8550],
+            [2.3400, 48.8600]
+          ]
+        }
+      }
+    ]
+  }
+  
