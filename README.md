@@ -8,8 +8,10 @@ Types uniques (définis avec `#` ):
 * **FLOAT**,
 * **STR**,
 * **BOOL**
+<!-- Sortie de liste -->
 Types multiples (définis avec `[]` ):
 * **LIST**
+<!-- Sortie de liste -->
 Types géométriques (définis avec `$` ):
 * **POINT**,
 * **LINE**,
