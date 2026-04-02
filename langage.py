@@ -583,7 +583,11 @@ def execute(ast):
         webbrowser.open("map.html")
     
 def run_file(filename):
-    with open(filename, 'r') as file:
+    from pathlib import Path
+    filename = Path(filename)
+    if not filename.exists():
+        raise FileNotFoundError(f"Fichier non trouvé : {filename}")
+    with filename.open('r', encoding='utf-8') as file:
         code = file.read()
         run(code)
 
@@ -601,9 +605,28 @@ def run(code):
 #run("INT a# <- 42;")
 #run("PRINT a#;")
 
-if __name__ == '__main__':
+def main(argv=None):
     import sys
-    if len(sys.argv) != 2:
-        print("Usage : python monlangage.py test.obs")
-    else:
-        run_file(sys.argv[1])
+    from pathlib import Path
+    if argv is None:
+        argv = sys.argv
+
+    if len(argv) != 2:
+        print("Usage : obsidian <fichier.obs>")
+        sys.exit(1)
+
+    source_path = Path(argv[1]).expanduser()
+    if not source_path.exists():
+        print(f"Fichier non trouvé : {source_path}")
+        sys.exit(1)
+
+    try:
+        run_file(source_path)
+    except Exception as e:
+        print(f"Erreur d'exécution : {e}")
+        sys.exit(1)
+
+    sys.exit(0)
+
+if __name__ == '__main__':
+    main()

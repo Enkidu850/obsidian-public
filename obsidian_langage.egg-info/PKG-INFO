@@ -1,46 +1,31 @@
+Metadata-Version: 2.4
+Name: obsidian-langage
+Version: 0.1.0
+Summary: Interpréteur de langage OBSIDIAN en CLI
+Requires-Python: >=3.8
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: pyproj
+Requires-Dist: folium
+Dynamic: license-file
+
 # OBSIDIAN
 
 Langage de programmation créé par Enkidu\
 Ecrit en : Python
 
-Types uniques (définis avec `#` ):
-* **INT**,
-* **FLOAT**,
-* **STR**,
-* **BOOL**
-Types multiples (définis avec `[]` ):
-* **LIST**
-Types géométriques (définis avec `$` ):
-* **POINT**,
-* **LINE**,
-* **POLYGON**
+Types uniques (définis avec `#` ): **INT**, **FLOAT**, **STR**, **BOOL**\
+Types multiples (définis avec `[]` ): **LIST**\
+Types géométriques (définis avec `$` ): **POINT**, **LINE**, **POLYGON**
 
-Déclaration d'une variable unique :
-```js
-INT nom_variable# <- 10;
-```
-Déclaration d'une variable multiple :
-```js
-LIST nom_variable[] <- ["Hello World!", 6, FALSE];
-```
-Déclaration d'une variable géométrique (code EPSG de la donnée à définir, par défaut en 4326):
-```js
-POINT nom_variable$ <- (48, 2) [4326];
-```
+Déclaration d'une variable unique : ```INT nom_variable# <- 10;```\
+Déclaration d'une variable multiple : ```LIST nom_variable[] <- ["Hello World!", 6, FALSE];```\
+Déclaration d'une variable géométrique (code EPSG de la donnée à définir, par défaut en 4326): ```POINT nom_variable$ <- (48, 2) [4326];```
 
-Affichage d'une variable unique :
-```js
-PRINT variable#;
-```
-Affichage d'un élément d'une variable multiple :
-```js
-PRINT liste[]{0};
-```
+Affichage d'une variable unique : ```PRINT variable#;```\
+Affichage d'un élément d'une variable multiple : ```PRINT liste[]{0};```
 
-Affichage d'une donnée géométrique sur une carte :
-```js
-MAP ligne$;
-```
+Affichage d'une donnée géométrique sur une carte : ```MAP ligne$;```
 
 ## Prérequis
 
@@ -52,26 +37,6 @@ npm install --save-dev @vscode/vsce
 ```
 
 ## Installation
-
-### Commande d'exécution
-
-Dans le dossier `obsidian`, installation de la commande :
-```powershell
-python -m pip install .
-```
-
-Puis ajoutez `obsidian.exe` au PATH : (exemple avec Python 3.12)
-```powershell
-$scripts_path = "$env:APPDATA\Python\Python312\Scripts"
-[Environment]::SetEnvironmentVariable("PATH", "$env:PATH;$scripts_path", "User")
-``` 
-
-Si Obsidian a été installé sur un seul profil et non de façon globale, alors il se trouvera là : (exemple avec Python 3.12)
-```powershell
-C:\Users\nom_utilisateur\AppData\Roaming\Python\Python312\Scripts
-```
-
-### Extension VSCode
 
 Le projet bénéficie d'une extension VSCode permettant d'apporter de la couleur au text des fichiers `.obs` et de leur ajouter une icône.
 
@@ -97,6 +62,6 @@ Si ça ne marche toujours pas, force.
 
 Pour exécuter un fichier `.obs` contenant votre code Obsidian : (exemple sur `hello_world.obs`)
 ```powershell
-obsidian hello_world.obs
+python langage.py hello_world.obs
 ```
 

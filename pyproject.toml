@@ -1,0 +1,16 @@
+[project]
+name = "obsidian-langage"
+version = "0.1.0"
+description = "Interpréteur de langage OBSIDIAN en CLI"
+readme = "README.md"
+requires-python = ">=3.8"
+dependencies = [
+    "pyproj",
+    "folium"
+]
+
+[project.scripts]
+obsidian = "langage:main"
+
+[tool.setuptools]
+py-modules = ["langage"]

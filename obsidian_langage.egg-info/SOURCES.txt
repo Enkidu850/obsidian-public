@@ -1,0 +1,10 @@
+LICENSE
+README.md
+langage.py
+pyproject.toml
+obsidian_langage.egg-info/PKG-INFO
+obsidian_langage.egg-info/SOURCES.txt
+obsidian_langage.egg-info/dependency_links.txt
+obsidian_langage.egg-info/entry_points.txt
+obsidian_langage.egg-info/requires.txt
+obsidian_langage.egg-info/top_level.txt
