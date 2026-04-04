@@ -4,7 +4,7 @@
 	"patterns": [
 		{
 		  "name": "keyword.control.obs",
-		  "match": "\\b(INT|PRINT|FLOAT|STR|BOOL|LIST|POINT|LINE|POLYGON|MAP)\\b"
+		  "match": "\\b(INT|PRINT|FLOAT|STR|BOOL|LIST|POINT|LINE|POLYGON|MAP|IF|ELSEIF|ELSE|END|THEN)\\b"
 		},
 		{
 		  "name": "constant.numeric.obs",
@@ -13,6 +13,11 @@
 		{
 		  "name": "string.obs",
 		  "match": "\".*?\""
+		},
+		{
+		  "name": "comment.block.obs",
+		  "begin": "\\{--",
+		  "end": "--\\}"
 		},
 		{
 		  "name": "variable.other.obs",
@@ -33,6 +38,10 @@
 		{
 			"name": "support.function.obs",
 			"match": "\\b(DISTANCE)\\b"
+		},
+		{
+			"name": "keyword.operator.obs",
+			"match": "(<-|=|>|<|>=|<=|!=|\\+|\\-|\\*|/)"
 		}
 	  ],
 	"repository": {

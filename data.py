@@ -1,0 +1,61 @@
+# Tokenizer
+token_specification = [
+    ('INT',           r'INT'),
+    ('FLOAT',         r'FLOAT'),
+    ('STR',           r'STR'),
+    ('PRINT',         r'PRINT'),
+    ('BOOL',          r'BOOL'),
+    ('POINT',         r'POINT'),
+    ('DISTANCE',      r'DISTANCE'),
+    ('LENGTH',        r'LENGTH'),
+    ('PERIMETER',     r'PERIMETER'),
+    ('AREA',          r'AREA'),
+    ('LINE',          r'LINE'),
+    ('POLYGON',       r'POLYGON'),
+    ('MAP',           r'MAP'),
+    ('IF',            r'IF'),
+    ('ELSEIF',        r'ELSEIF'),
+    ('ELSE',          r'ELSE'),
+    ('END',           r'END'),
+    ('THEN',          r'THEN'),
+    ('BOOL_TRUE',     r'\bTRUE\b'),
+    ('BOOL_FALSE',    r'\bFALSE\b'),
+    ('EPSG',          r'\[\d+\]'),
+    ('LIST_NAME',     r'[a-zA-Z_][a-zA-Z0-9_]*\[\]'),
+    ('IDENT',         r'[a-zA-Z_][a-zA-Z0-9_]*#'),
+    ('SPATIAL_IDENT', r'[a-zA-Z_][a-zA-Z0-9_]*\$'),
+    ('LPAREN',        r'\('),
+    ('RPAREN',        r'\)'),
+    ('ASSIGN',        r'<-'),
+    ('EQ',            r'='),
+    ('GT',            r'>'),
+    ('LT',            r'<'),
+    ('GE',            r'>='),
+    ('LE',            r'<='),
+    ('NE',            r'!='),
+    ('REAL',          r'\d+\.\d+'), # FLOAT
+    ('NUMBER',        r'\d+'), # INTEGER
+    ('LIST',          r'LIST'),
+    ('LBRACK',        r'\['),
+    ('RBRACK',        r'\]'),
+    ('COMMENT',       r'\{\-\-[\s\S]*?\-\-\}'),
+    ('LBRACE',        r'\{'),
+    ('RBRACE',        r'\}'),
+    ('COMMA',         r','),
+    ('SEMICOLON',     r';'),
+    ('SKIP',          r'[ \t]+'),
+    ('NEWLINE',       r'\n'),
+    ('PLUS',          r'\+'),
+    ('MINUS',         r'-'),
+    ('MULT',          r'\*'),
+    ('DIV',           r'/'),
+    ('CHAR',          r'"[^"\n]*"'), # STRING
+    ('MISMATCH',      r'.'),  # tout le reste
+]
+
+args = {
+            'DISTANCE': ['SPATIAL_IDENT', 'SPATIAL_IDENT'],
+            'LENGTH': ['SPATIAL_IDENT'],
+            'PERIMETER': ['SPATIAL_IDENT'],
+            'AREA': ['SPATIAL_IDENT']
+        }

@@ -2,6 +2,11 @@ INT entier# <- 10;
 FLOAT reel# <- 10.0;
 STR chaine# <- "Hello World!";
 BOOL booleen# <- TRUE;
+INT entierFloat# <- 10.0;
+FLOAT reelInt# <- 10;
+STR chaineInt# <- 10;
+STR chaineBool# <- TRUE;
+BOOL booleenFalse# <- FALSE;
 LIST maListe[] <- [
     "Salut",
     42,
@@ -14,27 +19,55 @@ LINE ligne$ <- ((6229006.8059, 263818.6995), (6228994.8069, 263775.2849), (62289
 POLYGON polygone$ <- ((10, 2), (3, 4), (5, 6), a$) [4326];
 
 
-PRINT 4 + 1.5;
-PRINT 10 / 2;
-PRINT 10 / 3.0;
-PRINT entier#;
-PRINT reel#;
-PRINT chaine#;
-PRINT "ROGER ME RECEVEZ VOUS ?" + " OUI !" + entier#;
-PRINT entier# + entier#;
-PRINT booleen#;
-PRINT entier# + booleen#;
-PRINT maListe[]{0};
-PRINT maListe[]{1};
-PRINT maListe[]{2};
-PRINT maListe[];
-PRINT DISTANCE{a$, b$};
-PRINT a$;
-PRINT c$;
-PRINT ligne$;
-PRINT polygone$;
-PRINT LENGTH{ligne$};
-PRINT PERIMETER{polygone$};
-PRINT AREA{polygone$};
+PRINT 4 + 1.5; {-- 5.5 --}
+PRINT 10 / 2; {-- 5.0 --}
+PRINT 10 / 3.0; {-- 3.333... --}
+PRINT entier#; {-- 10 --}
+PRINT reel#; {-- 10.0 --}
+PRINT chaine#; {-- "Hello World!" --}
+PRINT "ROGER ME RECEVEZ VOUS ?" + " OUI !" + entier#; {-- "ROGER ME RECEVEZ VOUS ? OUI !10" --}
+PRINT entier# + entier#; {-- 20 --}
+PRINT booleen#; {-- TRUE --}
+PRINT entierFloat#; {-- 10 --}
+PRINT reelInt#; {-- 10.0 --}
+PRINT chaineInt#; {-- "10" --}
+PRINT chaineBool#; {-- "TRUE" --}
+PRINT booleenFalse#; {-- FALSE --}
+PRINT entier# + booleen#; {-- 11 --}
+PRINT maListe[]{0}; {-- "Salut" --}
+PRINT maListe[]{1}; {-- 42 --}
+PRINT maListe[]{2}; {-- FALSE --}
+PRINT maListe[]; {-- ["Salut", 42, FALSE] --}
+PRINT DISTANCE{a$, b$}; {-- 40.35347186837686 --}
+PRINT a$; {-- (48.85912042441345, 2.2944356524978415) [EPSG:4326] --}
+PRINT c$; {-- ((48.85912042441345, 2.2944356524978415) [EPSG:4326], (20, 30.5) [EPSG:4326]) --}
+PRINT ligne$; {-- ((6229006.8059, 263818.6995) [EPSG:3857], (6228994.8069, 263775.2849) [EPSG:3857], (6228980.884, 263726.2264)) [EPSG:3857] --}
+PRINT polygone$; {-- ((10, 2) [EPSG:4326], (3, 4) [EPSG:4326], (5, 6) [EPSG:4326], (48.85912042441345, 2.2944356524978415) [EPSG:4326], (10, 2) [EPSG:4326]) --}
+PRINT LENGTH{ligne$}; {-- 96.03815837732449 --}
+PRINT PERIMETER{polygone$}; {-- 92.98415260818835 --}
+PRINT AREA{polygone$}; {-- 87.4543299800715 --}
 
+{-- Ouvre OSM et affiche le point a$
 MAP a$;
+--}
+
+IF (chaine# = "Hello World!") THEN
+    PRINT "oui"; {-- oui --}
+ELSE
+    PRINT "non"; {-- ne PRINT pas car condition non remplie --}
+END
+
+
+INT num# <- 10;
+IF (num# = 10) THEN
+    PRINT "égal"; {-- égal --}
+    PRINT "égal une deuxième fois"; {-- égal une deuxième fois --}
+    STR message# <- "Le nombre est égal à 10.";
+    PRINT message#; {-- Le nombre est égal à 10. --}
+ELSEIF (num# > 10) THEN
+    PRINT "supérieur"; {-- ne PRINT pas car condition non remplie --}
+ELSE
+    PRINT "inférieur"; {-- ne PRINT pas car condition non remplie --}
+END
+
+PRINT "Fin du programme."; {-- Fin du programme. --}

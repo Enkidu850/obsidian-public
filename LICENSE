@@ -1,10 +1,27 @@
-MIT License
+Open Source Copyleft-Attribution License (OSCAL‑1.0)
+Copyright (c) 2026 Enkidu850
+Permission is hereby granted to any person obtaining a copy of this software and associated documentation files (the “Software”) to use, modify, copy, and distribute the Software, including for commercial purposes, provided that all the following conditions are met:
 
-Copyright (c) 2025 Votre Nom
+1. Open Source Requirement (Strong Copyleft)
+Any project, product, or service that uses, modifies, includes, combines, or links to the Software, in whole or in part, must be entirely released under this same license (OSCAL‑1.0).
+Closed‑source or proprietary use is strictly prohibited.
 
-Permission is hereby granted, free of charge, to any person obtaining a copy
-of this software and associated documentation files (the "Software"), to deal
-in the Software without restriction, including without limitation the rights
-to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
-copies of the Software, and to permit persons to whom the Software is
-furnished to do so, subject to the following conditions...
+2. Attribution Requirement
+Any use, modification, or redistribution of the Software must include all of the following:
+  1 - A visible mention of the original author:
+      “Based on work by Enkidu850”.
+  2 - A link to the original repository
+      (e.g. GitHub URL).
+  3 - A notification to the author, via email, issue, or pull request, when the Software is used in another project.
+
+3. Distribution of Source Code
+If you distribute a modified or unmodified version of the Software, you must:
+  - Provide full source code
+  - Include this license (OSCAL‑1.0) in all distributed copies
+  - Clearly document any modifications made
+
+4. Commercial Use
+Commercial use is permitted only if the entire derived product is open source and licensed under OSCAL‑1.0.
+
+5. No Warranty
+The Software is provided “as is”, without warranty of any kind, express or implied.

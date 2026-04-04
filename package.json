@@ -46,11 +46,12 @@
     "type": "git",
     "url": "git+https://github.com/NathanLapaille/obsidian.git"
   },
-  "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
+    "push-private": "cd ../obsidian && git add . && git commit -m \"Update on private\" && git push --force && cd ../../..",
     "sync-public": "powershell -NoProfile -Command \"Copy-Item '../obsidian/*' -Destination '../TEST_PUBLIC/obsidian/' -Recurse -Force -Exclude @('node_modules', '.git', '.vscode', '*.vsix')\"",
-    "sync-and-push": "npm run sync-public && cd ../TEST_PUBLIC/obsidian && git add . && git commit -m \"Sync from private\" && git push --force && cd ../../.."
+    "sync-and-push-public": "npm run sync-public && cd ../TEST_PUBLIC/obsidian && git add . && git commit -m \"Sync from private\" && git push --force && cd ../../..",
+    "reset-modifs": "git reset --hard HEAD && git clean -fd"
   },
   "keywords": [],
   "author": "",
