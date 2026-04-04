@@ -1,6 +1,10 @@
 INT entier# <- 10;
+INT calcul# <- 10 + 5 * 2 - 3 / 4;
+INT calcul2# <- 10 + (5 * 2) - (3 / 4);
+INT entier2# <- entier# + 5;
 FLOAT reel# <- 10.0;
 STR chaine# <- "Hello World!";
+STR concatenation# <- chaine# + " " + entier# + " Obsidian!";
 BOOL booleen# <- TRUE;
 INT entierFloat# <- 10.0;
 FLOAT reelInt# <- 10;
@@ -23,8 +27,12 @@ PRINT 4 + 1.5; {-- 5.5 --}
 PRINT 10 / 2; {-- 5.0 --}
 PRINT 10 / 3.0; {-- 3.333... --}
 PRINT entier#; {-- 10 --}
+PRINT calcul#; {-- 19 --}
+PRINT calcul2#; {-- 19 --}
+PRINT entier2#; {-- 15 --}
 PRINT reel#; {-- 10.0 --}
 PRINT chaine#; {-- "Hello World!" --}
+PRINT concatenation#; {-- "Hello World! 10 Obsidian!" --}
 PRINT "ROGER ME RECEVEZ VOUS ?" + " OUI !" + entier#; {-- "ROGER ME RECEVEZ VOUS ? OUI !10" --}
 PRINT entier# + entier#; {-- 20 --}
 PRINT booleen#; {-- TRUE --}

@@ -34,11 +34,13 @@ def parse_expression(tokens):
 
     output = []
     while tokens:
+        kind, value = tokens[0]
+        if kind == 'SEMICOLON':
+            break
         token = tokens.pop(0)
-        kind, value = token
 
-        if kind in args: # args -> data.py
-            expected_args = args[kind]
+        if token[0] in args: # args -> data.py
+            expected_args = args[token[0]]
 
             # Vérifie si accolade ouvrante présente
             if not tokens or tokens.pop(0)[0] != 'LBRACE':
@@ -121,9 +123,9 @@ def parse_expression(tokens):
             output.append(('LIST_ACCESS', value, int(index_token[1])))
         elif kind == 'LIST_NAME':
             output.append(token)
-        elif kind in ('NUMBER', 'REAL', 'IDENT', 'CHAR', 'SPATIAL_IDENT'):
+        elif kind in ('NUMBER', 'REAL', 'IDENT', 'CHAR', 'SPATIAL_IDENT', 'BOOL_TRUE', 'BOOL_FALSE'):
             output.append(token)
-        elif kind in ('PLUS', 'MINUS', 'MULT', 'DIV', 'EQ', 'GT', 'LT', 'GE', 'LE', 'NE'):
+        elif kind in ('PLUS', 'MINUS', 'MULT', 'DIV', 'EQ', 'GT', 'LT', 'GE', 'LE', 'NE', 'LPAREN', 'RPAREN'):
             output.append(token)
         elif kind == 'SEMICOLON':
             break
@@ -133,9 +135,10 @@ def parse_expression(tokens):
     return ('expression', output)
 
 def eval_expression(expr_tokens):
-    stack = []
-
-    def resolve(token):
+    """Évalue une expression avec gestion des priorités et des parenthèses"""
+    
+    def resolve_value(token):
+        """Résout une valeur primitive (nombre, variable, appel de fonction)"""
         kind = token[0]
         value = token[1]
         if kind == 'NUMBER':
@@ -162,8 +165,8 @@ def eval_expression(expr_tokens):
                 raise NameError(f"Liste {varname} non définie.")
             return variables[varname]
         elif kind == 'IDENT':
-            """if value not in variables:
-                raise NameError(f"Variable {value} non définie.")"""
+            if value not in variables:
+                raise NameError(f"Variable {value} non définie.")
             return variables[value]
         elif kind == 'SPATIAL_IDENT':
             if value not in variables:
@@ -197,58 +200,104 @@ def eval_expression(expr_tokens):
             polygon = variables[name]
             return polygon.area()
         else:
-            raise ValueError(f"Token invalide dans resolve : {token}")
+            raise ValueError(f"Token invalide dans resolve_value : {token}")
 
-    i = 0
-    while i < len(expr_tokens):
-        token = expr_tokens[i]
-        if token[0] in (
-            'NUMBER',
-            'REAL',
-            'CHAR',
-            'IDENT',
-            'LIST_ACCESS',
-            'LIST_NAME',
-            'SPATIAL_IDENT',
-            'DISTANCE_CALL',
-            'LENGTH_CALL',
-            'PERIMETER_CALL',
-            'AREA_CALL'
-        ):
-            stack.append(resolve(token))
-        elif token[0] in ('PLUS', 'MINUS', 'MULT', 'DIV', 'EQ', 'GT', 'LT', 'GE', 'LE', 'NE'):
-            op = token[0]
-            a = stack.pop()
-            b = resolve(expr_tokens[i + 1])
-            if op == 'PLUS':
-                if isinstance(a, str) or isinstance(b, str):
-                    stack.append(str(a) + str(b))
+    pos = [0]  # Position actuelle dans les tokens (par référence pour pouvoir la modifier)
+
+    def current():
+        """Retourne le token actuel"""
+        if pos[0] < len(expr_tokens):
+            return expr_tokens[pos[0]]
+        return None
+
+    def consume():
+        """Consomme le token actuel et passe au suivant"""
+        token = current()
+        pos[0] += 1
+        return token
+
+    def eval_primary():
+        """Évalue un terme primaire (nombre, variable, parenthèses)"""
+        token = current()
+        if not token:
+            raise SyntaxError("Expression vide ou incomplète.")
+        
+        if token[0] == 'LPAREN':
+            consume()  # consume '('
+            result = eval_comparison()  # parse l'expression à l'intérieur des parenthèses
+            if not current() or current()[0] != 'RPAREN':
+                raise SyntaxError("')' attendu.")
+            consume()  # consume ')'
+            return result
+        elif token[0] in ('NUMBER', 'REAL', 'CHAR', 'BOOL_TRUE', 'BOOL_FALSE', 
+                          'IDENT', 'SPATIAL_IDENT', 'LIST_NAME', 'LIST_ACCESS',
+                          'DISTANCE_CALL', 'LENGTH_CALL', 'PERIMETER_CALL', 'AREA_CALL'):
+            consume()
+            return resolve_value(token)
+        elif token[0] == 'MINUS':
+            # Gère l'unaire moins
+            consume()
+            value = eval_primary()
+            return -value
+        elif token[0] == 'PLUS':
+            # Gère l'unaire plus
+            consume()
+            return eval_primary()
+        else:
+            raise SyntaxError(f"Token inattendu {token[0]}")
+
+    def eval_multiplicative():
+        """Évalue les opérations * et /"""
+        result = eval_primary()
+        while current() and current()[0] in ('MULT', 'DIV'):
+            op = consume()
+            right = eval_primary()
+            if op[0] == 'MULT':
+                result = result * right
+            elif op[0] == 'DIV':
+                result = result / right
+        return result
+
+    def eval_additive():
+        """Évalue les opérations + et -"""
+        result = eval_multiplicative()
+        while current() and current()[0] in ('PLUS', 'MINUS'):
+            op = consume()
+            right = eval_multiplicative()
+            if op[0] == 'PLUS':
+                if isinstance(result, str) or isinstance(right, str):
+                    result = str(result) + str(right)
                 else:
-                    stack.append(a + b)
-            elif op == 'MINUS':
-                stack.append(a - b)
-            elif op == 'MULT':
-                stack.append(a * b)
-            elif op == 'DIV':
-                stack.append(a / b)  # division entière
-            elif op == 'EQ':
-                stack.append(a == b)
-            elif op == 'GT':
-                stack.append(a > b)
-            elif op == 'LT':
-                stack.append(a < b)
-            elif op == 'GE':
-                stack.append(a >= b)
-            elif op == 'LE':
-                stack.append(a <= b)
-            elif op == 'NE':
-                stack.append(a != b)
-            i += 1  # saute l'opérande suivant qu'on vient de consommer
-        i += 1
+                    result = result + right
+            elif op[0] == 'MINUS':
+                result = result - right
+        return result
 
-    """if len(stack) != 1:
-        raise ValueError("Expression invalide.")"""
-    return stack[0]
+    def eval_comparison():
+        """Évalue les opérations de comparaison"""
+        result = eval_additive()
+        while current() and current()[0] in ('EQ', 'GT', 'LT', 'GE', 'LE', 'NE'):
+            op = consume()
+            right = eval_additive()
+            if op[0] == 'EQ':
+                result = result == right
+            elif op[0] == 'GT':
+                result = result > right
+            elif op[0] == 'LT':
+                result = result < right
+            elif op[0] == 'GE':
+                result = result >= right
+            elif op[0] == 'LE':
+                result = result <= right
+            elif op[0] == 'NE':
+                result = result != right
+        return result
+
+    result = eval_comparison()
+    if pos[0] < len(expr_tokens):
+        raise SyntaxError(f"Tokens non consommés après l'expression : {expr_tokens[pos[0]:]}")
+    return result
+
 
 # Parser
 def parse(tokens):
@@ -256,10 +305,10 @@ def parse(tokens):
         return None
 
     types = {
-        "INT": ("variable_unique", ["ASSIGN", ("NUMBER", "REAL"), "SEMICOLON"]),
-        "FLOAT": ("variable_unique", ["ASSIGN", ("REAL", "NUMBER"), "SEMICOLON"]),
-        "STR": ("variable_unique", ["ASSIGN", ("CHAR", "NUMBER", "REAL", "BOOL_TRUE", "BOOL_FALSE"), "SEMICOLON"]),
-        "BOOL": ("variable_unique", ["ASSIGN", ("BOOL_TRUE", "BOOL_FALSE"), "SEMICOLON"])
+        "INT": ("variable_unique", ["ASSIGN", "expression", "SEMICOLON"]),
+        "FLOAT": ("variable_unique", ["ASSIGN", "expression", "SEMICOLON"]),
+        "STR": ("variable_unique", ["ASSIGN", "expression", "SEMICOLON"]),
+        "BOOL": ("variable_unique", ["ASSIGN", "expression", "SEMICOLON"])
     }
 
     def token_matches(expected, actual):
@@ -272,26 +321,28 @@ def parse(tokens):
             tokens.pop(0)  # consume type
             ident = tokens.pop(0)
             assign = tokens.pop(0)
-            value = tokens.pop(0)
-            semicolon = tokens.pop(0)
-            # Permet de gérer les cas où la valeur est soit un token simple (ex: NUMBER) soit un token d'une catégorie (ex: NUMBER ou REAL pour un FLOAT)
-            if assign[0] != expected_tokens[0] or not token_matches(expected_tokens[1], value[0]) or semicolon[0] != expected_tokens[2]:
+            if assign[0] != 'ASSIGN':
                 raise SyntaxError("Syntaxe invalide dans la déclaration de variable.")
-            if isinstance(expected_tokens[1], tuple) and value[0] in expected_tokens[1]:
-                print(value[0], expected_tokens[1])
-                if stmt_type == 'INT':
-                    return ('declare_var', ident[1], int(float(value[1])))
-                elif stmt_type == 'FLOAT':
-                    return ('declare_var', ident[1], float(value[1]))
-                elif stmt_type == 'STR':
-                    if value[0] == 'CHAR':
-                        return ('declare_var', ident[1], value[1].strip('"'))
-                    elif value[0] in ('NUMBER', 'REAL'):
-                        return ('declare_var', ident[1], str(value[1]))
-                    elif value[0] in ('BOOL_TRUE', 'BOOL_FALSE'):
-                        return ('declare_var', ident[1], 'TRUE' if value[0] == 'BOOL_TRUE' else 'FALSE')
-                elif stmt_type == 'BOOL':
-                    return ('declare_var', ident[1], value[0] == 'BOOL_TRUE')
+
+            expr = parse_expression(tokens)
+            if not tokens or tokens.pop(0)[0] != 'SEMICOLON':
+                raise SyntaxError("Syntaxe invalide dans la déclaration de variable.")
+
+            value = eval_expression(expr[1])
+            if stmt_type == 'INT':
+                if not isinstance(value, (int, float)):
+                    raise TypeError("Un INT doit être une expression numérique.")
+                return ('declare_var', ident[1], int(float(value)))
+            elif stmt_type == 'FLOAT':
+                if not isinstance(value, (int, float)):
+                    raise TypeError("Un FLOAT doit être une expression numérique.")
+                return ('declare_var', ident[1], float(value))
+            elif stmt_type == 'STR':
+                return ('declare_var', ident[1], str(value))
+            elif stmt_type == 'BOOL':
+                if not isinstance(value, bool):
+                    raise TypeError("Un BOOL doit être une expression booléenne.")
+                return ('declare_var', ident[1], value)
 
     # if tokens[0][0] == 'INT':
     #     # Déclaration de variable
@@ -506,6 +557,8 @@ def parse(tokens):
     elif tokens[0][0] == 'PRINT':
         tokens.pop(0)  # Supprime le PRINT
         expr = parse_expression(tokens)
+        if not tokens or tokens.pop(0)[0] != 'SEMICOLON':
+            raise SyntaxError("Point-virgule attendu après PRINT.")
         return ('print_expr', expr)
     
     elif tokens[0][0] == 'IF':
