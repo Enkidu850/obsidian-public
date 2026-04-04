@@ -3,6 +3,8 @@
 Langage de programmation créé par Enkidu\
 Ecrit en : Python
 
+## Utilisation
+
 Types uniques (définis avec `#` ):
 * **INT**,
 * **FLOAT**,
@@ -42,6 +44,23 @@ PRINT liste[]{0};
 Affichage d'une donnée géométrique sur une carte :
 ```js
 MAP ligne$;
+```
+
+Commentaires :
+```js
+{-- Je suis un commentaire --}
+```
+
+Conditions :  
+_A noter : les blocs ELIF et ELSE sont facultatifs_
+```js
+IF (age# = 18) THEN
+    PRINT "égal";
+ELSEIF (age# > 18) THEN
+    PRINT "supérieur";
+ELSE
+    PRINT "inférieur";
+END
 ```
 
 ## Prérequis
